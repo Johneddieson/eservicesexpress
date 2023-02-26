@@ -97,7 +97,7 @@ module.exports =
     },
     getUserById: async (id, callBack) => 
     {
-        await pool.query(`select id, firstname, lastname, city from users where id = ?`,
+        await pool.query(`select id, firstname, lastname, city, businesspermitlength from users where id = ?`,
         [
             id
         ],

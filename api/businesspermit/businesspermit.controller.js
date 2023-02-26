@@ -1,7 +1,18 @@
 const { createBusinessPermitNew, createLineofBusiness ,
     createAmendment,
 createBasicInformation,
-createOtherInformation} = require("./businesspermit.service")
+createOtherInformation,
+getBusinessPermitPendingCount,
+getBusinessPermitList,
+getBusinessPermitListFilter,
+getBusinessPermitById,
+getAmendmentByBusinessPermitId,
+getBasicInformationByBusinessPermitId,
+getLineofBusinessByBusinessPermitId,
+getotherInformationByBusinessPermitId,
+updateBusinessPermitStatus,
+getUsersById,
+updateUsersBusinessPermitlength} = require("./businesspermit.service")
 
 
 module.exports = 
@@ -109,5 +120,248 @@ module.exports =
                 success: 1
             })
         })
-    }
+    },
+    getBusinessPermitPendingCount: async (req, res) => 
+    {
+        await getBusinessPermitPendingCount((err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json
+                ({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Business Permit Total Pendings Retrieved!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    getBusinessPermitList: async (req, res) => 
+    {
+        await getBusinessPermitList((err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json
+                ({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Business Permit List Retrieved!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    getBusinessPermitListFilter: async (req, res) => 
+    {
+        const body = req.body
+
+        await getBusinessPermitListFilter(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Business Permit Queried!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+
+    getBusinessPermitById: async (req, res) => 
+    {
+        const body = req.body
+
+        await getBusinessPermitById(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Business Permit By Id Queried!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    getAmendmentByBusinessPermitId: async (req, res) => 
+    {
+        const body = req.body
+
+        await getAmendmentByBusinessPermitId(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Amendment By Id Queried!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    getBasicInformationByBusinessPermitId: async (req, res) => 
+    {
+        const body = req.body
+
+        await getBasicInformationByBusinessPermitId(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Basic Information By Id Queried!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+
+    getLineofBusinessByBusinessPermitId: async (req, res) => 
+    {
+        const body = req.body
+
+        await getLineofBusinessByBusinessPermitId(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Line of Business By Id Queried!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+
+    getotherInformationByBusinessPermitId: async (req, res) => 
+    {
+        const body = req.body
+
+        await getotherInformationByBusinessPermitId(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(201).json
+            ({
+                message: 'Other Information By Id Queried!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    updateBusinessPermitStatus: async (req, res) => 
+    {
+        const body = req.body
+
+        await updateBusinessPermitStatus(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(200).json
+            ({
+                message: 'Business Permit Updated Successfully!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    getUsersById: async (req, res) => 
+    {
+        const body = req.body
+
+        await getUsersById(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(200).json
+            ({
+                message: 'Business Permit Updated Successfully!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    updateUsersBusinessPermitlength: async (req, res) => 
+    {
+        const body = req.body
+
+        await updateUsersBusinessPermitlength(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(200).json
+            ({
+                message: 'users businesspermit length updated successfully!',
+                success: 1,
+                data: result
+            })
+        })
+    },
 }

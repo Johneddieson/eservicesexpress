@@ -86,7 +86,7 @@ module.exports =
 
     createBasicInformation: async (data, callBack) => 
     {
-        console.log("basic information", data)
+        //console.log("basic information", data)
                await  pool.query
                 (
                     `insert into basicinformation (ModeOfPayment,DateOfApplication,TinNo,
@@ -190,5 +190,241 @@ module.exports =
                 )
             
 
+    },
+
+    getBusinessPermitPendingCount: async (callBack) => 
+    {
+               await  pool.query
+                (
+                    `select count(status) as status from businesspermit where status = 'Pending'`,
+                    
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result[0]);
+                    }
+                )
+            
+
+    },
+
+    getBusinessPermitList: async (callBack) => 
+    {
+               await  pool.query
+                (
+                    `select concat(u.firstname, char(32),  u.middlename, char(32),  u.lastname) as applicantFullname, u.email as applicantEmail,
+                    bp.DateCreated as date, bp.Status as status,
+                    concat(bf.TaxPayerFirstName, char(32), bf.TaxPayerMiddleName, char(32), bf.TaxPayerLastName) as taxpayerFullname,
+                    bf.TaxPayerBusinessName as businessname, bf.TradeNameFranchise as tradenameFranchise,
+                    bp.BusinessPermitId as businessPermitId, bp.Type as type
+                    from businesspermit as bp inner join amendment as amend on bp.BusinessPermitId = amend.BusinessPermitId
+                    inner join basicinformation as bf on bp.BusinessPermitId = bf.BusinessPermitId
+                    inner join users as u on bp.UserId = u.id  order by bp.DateCreated DESC`,
+                    
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+
+
+    getBusinessPermitListFilter: async (data, callBack) => 
+    {
+        var sqlClause = ''
+
+        sqlClause += sqlClause == '' ? data.dateTodayCheckBox == false ? '' : ` where  bp.DateCreated between '${data.datefromfilter} 00:00' and '${data.datetofilter} 23:59'` : data.dateTodayCheckBox == false ? '' : ` and  bp.DateCreated between '${data.datefromfilter}' and '${data.datetofilter}'`; 
+        sqlClause += sqlClause == '' ? data.applicantFullnameCheckBox == false ? '' : ` where concat(u.firstname, char(32),  u.middlename, char(32),  u.lastname) like '%${data.applicantfullnamefilter}%'` : data.applicantFullnameCheckBox == false ? '' : ` and concat(u.firstname, char(32),  u.middlename, char(32),  u.lastname) like '%${data.applicantfullnamefilter}%'`; 
+        sqlClause += sqlClause == '' ? data.applicantEmailCheckBox == false ? '' : ` where  u.email like '%${data.applicantemailfilter}%'` : data.applicantEmailCheckBox == false ? '' : ` and  u.email like '%${data.applicantemailfilter}%'`; 
+        sqlClause += sqlClause == '' ? data.taxpayerFullnameCheckBox == false ? '' : ` where concat(bf.TaxPayerFirstName, char(32), bf.TaxPayerMiddleName, char(32), bf.TaxPayerLastName) like '%${data.taxpayerfullnamefilter}%'` : data.taxpayerFullnameCheckBox == false ? '' : ` and concat(bf.TaxPayerFirstName, char(32), bf.TaxPayerMiddleName, char(32), bf.TaxPayerLastName) like '%${data.taxpayerfullnamefilter}%'`; 
+        sqlClause += sqlClause == '' ? data.businessNameCheckBox == false ? '' : ` where bf.TaxPayerBusinessName like '%${data.businessnamefilter}%'` : data.businessNameCheckBox == false ? '' : ` and bf.TaxPayerBusinessName like '%${data.businessnamefilter}%'`; 
+        sqlClause += sqlClause == '' ? data.businessPermitTypeCheckBox == false ? '' : ` where bp.Type = '${data.typefilter}'` : data.businessPermitTypeCheckBox == false ? '' : ` and bp.Type = '${data.typefilter}'`; 
+        sqlClause += sqlClause == '' ? data.statusCheckBox == false ? '' : ` where bp.Status = '${data.statusfilter}'` : data.statusCheckBox == false ? '' : ` and bp.Status = '${data.statusfilter}'`; 
+        
+
+               await  pool.query
+                (
+                    `select concat(u.firstname, char(32),  u.middlename, char(32),  u.lastname) as applicantFullname, u.email as applicantEmail,
+                    bp.DateCreated as date, bp.Status as status,
+                    concat(bf.TaxPayerFirstName, char(32), bf.TaxPayerMiddleName, char(32), bf.TaxPayerLastName) as taxpayerFullname,
+                    bf.TaxPayerBusinessName as businessname, bf.TradeNameFranchise as tradenameFranchise,
+                    bp.BusinessPermitId as businessPermitId, bp.Type as type
+                    from businesspermit as bp inner join amendment as amend on bp.BusinessPermitId = amend.BusinessPermitId
+                    inner join basicinformation as bf on bp.BusinessPermitId = bf.BusinessPermitId
+                    inner join users as u on bp.UserId = u.id ${sqlClause}  order by bp.DateCreated DESC`,
+                    
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+
+
+
+
+    getBusinessPermitById: async (data, callBack) => 
+    {
+               await  pool.query
+                (
+                    `select * from businesspermit where businesspermitid = ?`,
+                    [data.id],
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+
+    getAmendmentByBusinessPermitId: async (data, callBack) => 
+    {
+               await  pool.query
+                (
+                    `select * from amendment where businesspermitid = ?`,
+                    [data.id],
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+
+    getBasicInformationByBusinessPermitId: async (data, callBack) => 
+    {
+               await  pool.query
+                (
+                    `select * from BasicInformation where businesspermitid = ?`,
+                    [data.id],
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+
+    getLineofBusinessByBusinessPermitId: async (data, callBack) => 
+    {
+               await  pool.query
+                (
+                    `select * from LineofBusiness where businesspermitid = ?`,
+                    [data.id],
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+
+    getotherInformationByBusinessPermitId: async (data, callBack) => 
+    {
+               await  pool.query
+                (
+                    `select * from otherInformation where businesspermitid = ?`,
+                    [data.id],
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+    updateBusinessPermitStatus: async (data, callBack) => 
+    {
+            await pool.query
+            (
+                `update businesspermit set status = ? where businesspermitid = ?`,
+                [
+                    data.status,
+                    data.businesspermitid
+                ],
+                (err, result, fields) => 
+                {
+                    if (err)
+                    {
+                        return callBack(err)
+                    }
+                    return callBack(null, result)
+                }
+            )
+    },
+    getUsersById: async (data, callBack) => 
+    {
+               await  pool.query
+                (
+                    `select * from users where id = ?`,
+                    [data.id],
+                    (err, result, fields) => 
+                    {
+                        if (err)
+                        {
+                            return callBack(err);
+                        }
+                        return callBack(null, result);
+                    }
+                )
+            
+
+    },
+    updateUsersBusinessPermitlength: async (data, callBack) => 
+    {
+            await pool.query
+            (
+                `update users set businesspermitlength = businesspermitlength + 1  where id = ?`,
+                [
+                    data.id,
+                ],
+                (err, result, fields) => 
+                {
+                    if (err)
+                    {
+                        return callBack(err)
+                    }
+                    return callBack(null, result)
+                }
+            )
     },
 }
