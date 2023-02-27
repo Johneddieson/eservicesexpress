@@ -13,7 +13,8 @@ getLineofBusinessByBusinessPermitId,
 getotherInformationByBusinessPermitId,
 updateBusinessPermitStatus,
 getUsersById,
-updateUsersBusinessPermitlength} = require("./businesspermit.controller")
+updateUsersBusinessPermitlength,
+sendGridEmail} = require("./businesspermit.controller")
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token-validation");
 
@@ -35,4 +36,7 @@ router.post("/getotherInformationByBusinessPermitId", getotherInformationByBusin
 router.post("/updateBusinessPermitStatus", updateBusinessPermitStatus);
 router.post("/getUsersById", getUsersById);
 router.post("/updateUsersBusinessPermitlength", updateUsersBusinessPermitlength);
+
+
+router.post("/sendGridEmail", sendGridEmail);
 module.exports = router

@@ -12,7 +12,8 @@ getLineofBusinessByBusinessPermitId,
 getotherInformationByBusinessPermitId,
 updateBusinessPermitStatus,
 getUsersById,
-updateUsersBusinessPermitlength} = require("./businesspermit.service")
+updateUsersBusinessPermitlength,
+sendGridEmail} = require("./businesspermit.service")
 
 
 module.exports = 
@@ -359,6 +360,29 @@ module.exports =
             return res.status(200).json
             ({
                 message: 'users businesspermit length updated successfully!',
+                success: 1,
+                data: result
+            })
+        })
+    },
+    sendGridEmail: async (req, res) => 
+    {
+        const body = req.body
+
+        await sendGridEmail(body, (err, result) => 
+        {
+            //console.log("bobo ka naman", result)
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: err   
+                })
+            }
+            return res.status(200).json
+            ({
+                message: result,
                 success: 1,
                 data: result
             })
