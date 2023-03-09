@@ -367,20 +367,21 @@ module.exports =
     },
     sendGridEmail: async (req, res) => 
     {
+        //console.log("the response of email", res)
         const body = req.body
 
-        await sendGridEmail(body, (err, result) => 
+         sendGridEmail(body, async (err, result) => 
         {
             //console.log("bobo ka naman", result)
             if (err)
             {
-                return res.status(500).json({
+                return await res.status(500).json({
                  message: JSON.stringify(err),
                  success: 0,
                  data: err   
                 })
             }
-            return res.status(200).json
+            return await res.status(200).json
             ({
                 message: result,
                 success: 1,

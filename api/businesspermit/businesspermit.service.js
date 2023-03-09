@@ -1,12 +1,8 @@
 const { parse } = require("dotenv");
 const pool = require("../../config/database");
 const nodemailer = require("nodemailer");
-
-
-
 module.exports = 
 {
-
 sendGridEmail: async (data, callBack) => 
 { 
     let mailTrasnporter = nodemailer.createTransport
@@ -16,7 +12,13 @@ sendGridEmail: async (data, callBack) =>
         {
             user: 'alcalaeservices@gmail.com',
             pass: 'wjddtxnqetvobdlg'
-        }
+        },
+    port: 25,
+    tls: {
+        rejectUnauthorized: false
+    },
+    logger: true,
+    debug: false
     })
     let details = 
     {
@@ -25,15 +27,15 @@ sendGridEmail: async (data, callBack) =>
         subject: data.subject,
         text: data.text
     }
-    mailTrasnporter.sendMail(details, (err) => 
+     mailTrasnporter.sendMail(details, (err, info) => 
     {
         if (err)
         {
-           // console.log("there is an error", err)
+            console.log("there is an error", err)
             return callBack(err)
         }
-        
-        //    console.log("email sent")
+            //console.log("email sent", info)
+            console.log("email sent")
             return callBack(null, 'success')
         
     })
@@ -309,9 +311,6 @@ sendGridEmail: async (data, callBack) =>
             
 
     },
-
-
-
 
     getBusinessPermitById: async (data, callBack) => 
     {

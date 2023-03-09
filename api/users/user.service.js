@@ -91,13 +91,14 @@ module.exports =
             {
                return callBack(error)
             }
+            
             return callBack(null, results);
         }
         )
     },
     getUserById: async (id, callBack) => 
     {
-        await pool.query(`select id, firstname, lastname, city, businesspermitlength from users where id = ?`,
+        await pool.query(`select * from users where id = ?`,
         [
             id
         ],
@@ -107,6 +108,7 @@ module.exports =
             {
                return callBack(error)
             }
+            //console.log("get user", results)
             return callBack(null, results);
         }
         )
@@ -124,6 +126,57 @@ module.exports =
             return callBack(null, results[0])
         }
         )
+    },
+    changeUserPassword: async(data, callBack) => 
+    {
+        await pool.query
+        (`update users set password = ? where id = ?`,
+        [
+        data.newpassword,
+        data.id
+        ],
+        (err, result, fields) => 
+        {
+            if (err)
+            {
+                return callBack(err)
+            }
+            return callBack(null, result)           
+        }
+        )
+    },
+    updateProfileInformation: async (data, callBack) => 
+    {
+        await pool.query
+        (
+            `update users set firstname=?,lastname=?,middlename=?,suffix=?,birthdate=?,
+        sex=?, email=?,number=?,city=?,housenumber=?,street=?,barangay=?,
+        workingInAlcala=?,occupation=? where id=?`,
+        [
+            data.firstname,
+            data.lastname,
+            data.middlename,
+            data.suffix,
+            data.birthdate,
+            data.sex,
+            data.email,
+            data.number,
+            data.city,
+            data.housenumber,
+            data.street,
+            data.barangay,
+            data.workingInAlcala,
+            data.occupation,
+            data.id,
+        ],
+        (err, results, fields) => 
+        {
+            if (err)
+            {
+             return callBack(err)
+            }
+            return callBack(null, results)
+        }
+        )
     }
-
 }

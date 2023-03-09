@@ -4,9 +4,10 @@ const app = express();
 const userRouter = require("./api/users/user.router");
 const businesspermitRouter = require("./api/businesspermit/businesspermit.router");
 const cors = require("cors");
+var timeout = require('connect-timeout');
 app.use(cors())
 app.use(express.json());
-
+app.use(timeout('600s'));
 app.use("/users", userRouter);
 app.use("/businesspermit", businesspermitRouter);
 

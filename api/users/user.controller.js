@@ -4,7 +4,9 @@ const {
     deleteUser, 
     getUser, 
     getUserById ,
-    getUserByEmail
+    getUserByEmail,
+    changeUserPassword,
+    updateProfileInformation
 } = require("./user.service");
 const { genSaltSync, hashSync, compareSync } = require("bcrypt")
 const { sign } = require('jsonwebtoken');
@@ -158,5 +160,89 @@ module.exports =
             }
         })
 
+    },
+    changeUserPassword: async (req, res) => 
+    {
+        var body = req.body
+        const salt = genSaltSync(10);
+        body.newpassword = hashSync(body.newpassword, salt);
+        await getUserById(body.id, ((err, result) => 
+        {
+            //console.log("hello nge", result.length)
+            if (err)
+            {
+                return res.status(500).json
+                ({
+                    message: JSON.stringify(err),
+                    data: [],
+                    success: 0
+                })        
+            }
+            if (result.length <= 0)
+            {
+                return res.status(404).json
+                ({
+                    message: 'User not found',
+                    data: [],
+                    success: 0
+                })
+            }
+            else 
+            {
+                const oldpasswordComparer = compareSync(body.oldpassword, result[0].password);
+                if (oldpasswordComparer)
+                {
+                    result.password = undefined;
+                    changeUserPassword(body, (err, resultforChangingPassword) => 
+                    {
+                       if (err)
+                       {
+                        return res.status(500).json
+                        ({
+                            message: JSON.stringify(err),
+                            data: [],
+                            success: 0
+                        })  
+                       }
+                       return res.status(200).json
+                        ({
+                            message: 'Password changed successfully',
+                            data: resultforChangingPassword,
+                            success: 1
+                        }) 
+                    })
+                }
+                else 
+                {
+                    return res.json
+                    ({
+                        success: 0,
+                        message: 'Incorrect old password.'
+                    })
+                }
+            }
+        }))
+    },
+    updateProfileInformation: async (req, res) => 
+    {
+        var body = req.body
+        await updateProfileInformation(body, ((err, results) => 
+        {
+            if (err)
+            {
+                return res.status(500).json
+                ({
+                    message: JSON.stringify(err),
+                    success: 0,
+                    data: results
+                })
+            }
+            return res.status(200).json
+                ({
+                    message: "Information updated successfully!",
+                    success: 1,
+                    data: results
+                })
+        }))
     }
 }
