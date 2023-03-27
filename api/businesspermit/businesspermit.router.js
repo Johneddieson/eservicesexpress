@@ -14,7 +14,11 @@ getotherInformationByBusinessPermitId,
 updateBusinessPermitStatus,
 getUsersById,
 updateUsersBusinessPermitlength,
-sendGridEmail} = require("./businesspermit.controller")
+sendGridEmail,
+sendSMSCode,
+payMongoAPI,
+adyenAPIPayment,
+updateBusinessPermitAppointmentSchedule} = require("./businesspermit.controller")
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token-validation");
 
@@ -36,7 +40,10 @@ router.post("/getotherInformationByBusinessPermitId", getotherInformationByBusin
 router.post("/updateBusinessPermitStatus", updateBusinessPermitStatus);
 router.post("/getUsersById", getUsersById);
 router.post("/updateUsersBusinessPermitlength", updateUsersBusinessPermitlength);
-
+router.post("/sendSMSCode", sendSMSCode);
+router.post("/payMongoAPI", payMongoAPI);
 
 router.post("/sendGridEmail", sendGridEmail);
+router.post("/adyenAPIPayment", adyenAPIPayment);
+router.post("/updateBusinessPermitAppointmentSchedule", updateBusinessPermitAppointmentSchedule);
 module.exports = router

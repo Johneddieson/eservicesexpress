@@ -1,6 +1,10 @@
 const { parse } = require("dotenv");
 const pool = require("../../config/database");
 const nodemailer = require("nodemailer");
+const { callbackPromise } = require("nodemailer/lib/shared");
+const client = require('twilio')('ACfc0131db4c2908631b5940ac6f3584fa', '8cd9694402b7bf170a8a1124025f91e6')
+const paymongo = require('paymongo-node')('sk_test_pXt5FyeKwRVB5tm6sKAUiKH4');
+const {Client, Config, CheckoutAPI} = require('@adyen/api-library');
 module.exports = 
 {
 sendGridEmail: async (data, callBack) => 
@@ -14,18 +18,19 @@ sendGridEmail: async (data, callBack) =>
             pass: 'wjddtxnqetvobdlg'
         },
     port: 25,
-    tls: {
-        rejectUnauthorized: false
-    },
-    logger: true,
-    debug: false
+    // tls: {
+    //     rejectUnauthorized: false
+    // },
+    //logger: true,
+    //debug: false
     })
     let details = 
     {
         from: 'Alcala Eservices Admin',
         to: data.to,
         subject: data.subject,
-        text: data.text
+        text: data.text,
+        html: data.html
     }
      mailTrasnporter.sendMail(details, (err, info) => 
     {
@@ -410,9 +415,11 @@ sendGridEmail: async (data, callBack) =>
     {
             await pool.query
             (
-                `update businesspermit set status = ? where businesspermitid = ?`,
+                `update businesspermit set status = ?, dateapproved = ?, appointmentschedule = ? where businesspermitid = ?`,
                 [
                     data.status,
+                    data.dateapproved,
+                    data.appointmentschedule,
                     data.businesspermitid
                 ],
                 (err, result, fields) => 
@@ -450,6 +457,101 @@ sendGridEmail: async (data, callBack) =>
                 `update users set businesspermitlength = businesspermitlength + 1  where id = ?`,
                 [
                     data.id,
+                ],
+                (err, result, fields) => 
+                {
+                    if (err)
+                    {
+                        return callBack(err)
+                    }
+                    return callBack(null, result)
+                }
+            )
+    },
+
+    sendSMSCode: async (data, callBack) => 
+    {
+        client.messages.create
+        ({
+            body: '87261',
+            to: '+639654717066',
+            from: '+15673473318'
+        }).then(message => {
+            console.log("nag error", message)
+            return callBack(null, message)
+        })
+        .catch(err => 
+            {
+                console.log("nag error", err)
+                return callBack(err)
+            })
+    },
+
+    payMongoAPI: async (data, callBack) => 
+    {
+        paymongo.paymentIntents.create({
+            amount: 10000,
+            payment_method_allowed: ['gcash'],
+            currency: 'PHP' 
+            // insert other required attributes here
+          })
+            .then(function(resource) {
+              console.log("resource", resource);
+              callBack(null, resource)
+            })
+            .catch(function(e) {
+                callBack(e)
+              if (e.type === "AuthenticationError") {
+                // Handle authentication error
+              } else if (e.type === "InvalidRequestError") {
+                // Handle validation errors
+                e.errors.forEach(function (error) {
+                  console.log("error code", error.code);
+                  console.log("error detail", error.detail);
+                })
+              }
+            });
+    },
+    adyenAPIPayment: async (data, callBack) => 
+    {
+        const config = new Config();
+config.apiKey = 'AQEwhmfuXNWTK0Qc+iSTh3chquWvTYhFA5xGV2Jfw2v8yjdEh5P+VU+aMDqRSi643FcrEMFdWw2+5HzctViMSCJMYAc=-POTE44d+sI2egGADE/PkBovp6eti57flfZPBPlUSAZ0=-yyMDmP8b_8<$+b>z'
+
+config.merchantAccount = 'CusymaTechnologies741ECOM';
+const clientAdyen = new Client({ config });
+clientAdyen.setEnvironment("TEST");
+const checkout = new CheckoutAPI(clientAdyen);
+
+checkout.payments({
+    amount: { currency: "PHP", value: 1000 },
+    paymentMethod: {
+        type: 'gcash',
+        storedPaymentMethodId: "7219687191761347"
+    },
+    reference: "test",
+    merchantAccount: config.merchantAccount,
+    shopperReference: "test",
+    returnUrl: "https://your-company.com/checkout?shopperOrder=12xy..",
+    shopperInteraction: "ContAuth",
+    recurringProcessingModel: "Subscription"
+}).then((res) => 
+{
+    console.log("payment response", res)
+    callBack(null, res)
+}).catch((err) => 
+{
+    callBack(err)
+    console.log("payment response error", err)
+})
+    },
+    updateBusinessPermitAppointmentSchedule: async (data, callBack) => 
+    {
+            await pool.query
+            (
+                `update businesspermit set appointmentschedule = ? where businesspermitid = ?`,
+                [
+                    data.appointmentschedule,
+                    data.businesspermitid
                 ],
                 (err, result, fields) => 
                 {

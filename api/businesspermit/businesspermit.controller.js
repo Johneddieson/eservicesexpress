@@ -13,7 +13,11 @@ getotherInformationByBusinessPermitId,
 updateBusinessPermitStatus,
 getUsersById,
 updateUsersBusinessPermitlength,
-sendGridEmail} = require("./businesspermit.service")
+sendGridEmail,
+sendSMSCode,
+payMongoAPI,
+adyenAPIPayment,
+updateBusinessPermitAppointmentSchedule} = require("./businesspermit.service")
 
 
 module.exports = 
@@ -389,4 +393,93 @@ module.exports =
             })
         })
     },
+    sendSMSCode: async (req, res) => 
+    {
+        await sendSMSCode(req.body, (err, result) => 
+        {
+                if (err)
+                {
+                    return res.status(500).json
+                    ({
+                        message: JSON.stringify(err),
+                        success: 0,
+                        data: []
+                    })
+                }
+                return res.status(200).json
+                ({
+                    message: 'Success!',
+                    success: 1,
+                    data: result
+                })
+
+        })
+    },
+    payMongoAPI: async (req, res) => 
+    {
+        var body = req.body
+        await payMongoAPI(body, (err, result) => 
+        {
+                if (err)
+                {
+                    return res.status(500).json
+                    ({
+                        message: JSON.stringify(err),
+                        success: 0,
+                        data: [] 
+                    })
+                }
+                return res.status(200).json
+                ({
+                    message: 'success',
+                    success: 1,
+                    data: result
+                })
+               
+        })
+    },
+    adyenAPIPayment: async (req, res) => 
+    {
+        var body = req.body
+        await adyenAPIPayment(body, (err, result) => 
+        {
+                if (err)
+                {
+                    return res.status(500).json
+                    ({
+                        message: JSON.stringify(err),
+                        success: 0,
+                        data: [] 
+                    })
+                }
+                return res.status(200).json
+                ({
+                    message: 'success',
+                    success: 1,
+                    data: result
+                })
+        })
+    },
+    updateBusinessPermitAppointmentSchedule: async (req, res) => 
+    {
+        const body = req.body
+
+        await updateBusinessPermitAppointmentSchedule(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(200).json
+            ({
+                message: 'Business Permit Appointment Schedule Updated Successfully!',
+                success: 1,
+                data: result
+            })
+        })
+    }
 }
