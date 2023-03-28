@@ -18,7 +18,8 @@ sendGridEmail,
 sendSMSCode,
 payMongoAPI,
 adyenAPIPayment,
-updateBusinessPermitAppointmentSchedule} = require("./businesspermit.controller")
+updateBusinessPermitAppointmentSchedule,
+updateBusinessPermitDateApproved} = require("./businesspermit.controller")
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token-validation");
 
@@ -46,4 +47,5 @@ router.post("/payMongoAPI", payMongoAPI);
 router.post("/sendGridEmail", sendGridEmail);
 router.post("/adyenAPIPayment", adyenAPIPayment);
 router.post("/updateBusinessPermitAppointmentSchedule", updateBusinessPermitAppointmentSchedule);
+router.post("/updateBusinessPermitDateApproved", updateBusinessPermitDateApproved);
 module.exports = router

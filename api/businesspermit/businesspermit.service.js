@@ -415,10 +415,10 @@ sendGridEmail: async (data, callBack) =>
     {
             await pool.query
             (
-                `update businesspermit set status = ?, dateapproved = ?, appointmentschedule = ? where businesspermitid = ?`,
+                `update businesspermit set status = ?, appointmentschedule = ? where businesspermitid = ?`,
                 [
                     data.status,
-                    data.dateapproved,
+                    //data.dateapproved,
                     data.appointmentschedule,
                     data.businesspermitid
                 ],
@@ -551,6 +551,25 @@ checkout.payments({
                 `update businesspermit set appointmentschedule = ? where businesspermitid = ?`,
                 [
                     data.appointmentschedule,
+                    data.businesspermitid
+                ],
+                (err, result, fields) => 
+                {
+                    if (err)
+                    {
+                        return callBack(err)
+                    }
+                    return callBack(null, result)
+                }
+            )
+    },
+    updateBusinessPermitDateApproved: async (data, callBack) => 
+    {
+            await pool.query
+            (
+                `update businesspermit set dateapproved = ? where businesspermitid = ?`,
+                [
+                    data.dateapproved,
                     data.businesspermitid
                 ],
                 (err, result, fields) => 

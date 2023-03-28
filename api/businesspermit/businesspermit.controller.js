@@ -17,7 +17,8 @@ sendGridEmail,
 sendSMSCode,
 payMongoAPI,
 adyenAPIPayment,
-updateBusinessPermitAppointmentSchedule} = require("./businesspermit.service")
+updateBusinessPermitAppointmentSchedule,
+updateBusinessPermitDateApproved} = require("./businesspermit.service")
 
 
 module.exports = 
@@ -481,5 +482,27 @@ module.exports =
                 data: result
             })
         })
-    }
+    },
+    updateBusinessPermitDateApproved: async (req, res) => 
+    {
+        const body = req.body
+
+        await updateBusinessPermitDateApproved(body, (err, result) => 
+        {
+            if (err)
+            {
+                return res.status(500).json({
+                 message: JSON.stringify(err),
+                 success: 0,
+                 data: []   
+                })
+            }
+            return res.status(200).json
+            ({
+                message: 'Business Permit Updated Successfully!',
+                success: 1,
+                data: result
+            })
+        })
+    },
 }
