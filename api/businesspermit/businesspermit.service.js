@@ -397,7 +397,7 @@ sendGridEmail: async (data, callBack) =>
     {
                await  pool.query
                 (
-                    `select * from otherInformation where businesspermitid = ?`,
+                    `select * from otherinformation where businesspermitid = ?`,
                     [data.id],
                     (err, result, fields) => 
                     {
