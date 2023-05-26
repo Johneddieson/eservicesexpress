@@ -3,7 +3,7 @@ const pool = require("../../config/database");
 const nodemailer = require("nodemailer");
 const { callbackPromise } = require("nodemailer/lib/shared");
 const client = require('twilio')('ACfc0131db4c2908631b5940ac6f3584fa', '8cd9694402b7bf170a8a1124025f91e6')
-const paymongo = require('paymongo-node')('sk_test_pXt5FyeKwRVB5tm6sKAUiKH4');
+const paymongo = require('paymongo-node')('sk_live_CsrB48cqBVcpwBahaQXebdVz');
 const {Client, Config, CheckoutAPI} = require('@adyen/api-library');
 module.exports = 
 {
@@ -490,7 +490,7 @@ sendGridEmail: async (data, callBack) =>
     payMongoAPI: async (data, callBack) => 
     {
         paymongo.paymentIntents.create({
-            amount: 10000,
+            amount: 20000,
             payment_method_allowed: ['gcash'],
             currency: 'PHP' 
             // insert other required attributes here

@@ -421,6 +421,7 @@ module.exports =
         var body = req.body
         await payMongoAPI(body, (err, result) => 
         {
+            console.log("the error", err)
                 if (err)
                 {
                     return res.status(500).json
@@ -505,4 +506,6 @@ module.exports =
             })
         })
     },
+
+    
 }

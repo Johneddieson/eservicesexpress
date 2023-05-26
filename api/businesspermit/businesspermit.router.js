@@ -19,7 +19,8 @@ sendSMSCode,
 payMongoAPI,
 adyenAPIPayment,
 updateBusinessPermitAppointmentSchedule,
-updateBusinessPermitDateApproved} = require("./businesspermit.controller")
+updateBusinessPermitDateApproved
+} = require("./businesspermit.controller")
 const router = require("express").Router();
 const { checkToken } = require("../../auth/token-validation");
 
